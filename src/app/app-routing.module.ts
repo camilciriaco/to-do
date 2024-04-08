@@ -15,6 +15,10 @@ const routes: Routes = [
     redirectTo: 'home',
     pathMatch: 'full'
   },
+  {
+    path: 'addtodo',
+    loadChildren: () => import('./addtodo/addtodo.module').then( m => m.AddtodoPageModule)
+  },
 ];
 
 @NgModule({

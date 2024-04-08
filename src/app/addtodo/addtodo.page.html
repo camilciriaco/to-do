@@ -1,0 +1,40 @@
+<ion-content fullscreen>
+
+  <ion-item class="close-fake" lines="none" text-center >
+    <ion-chip (click)="close()" slot='end' color="primary">
+      <ion-icon name="close" size="small" color="dark"></ion-icon>
+      <ion-label color="dark" >Close</ion-label>
+    </ion-chip>
+  </ion-item>
+
+  <ion-list>
+    <div>
+      <ion-label color="black" class="textTitle">Add To-do</ion-label>
+    </div>
+
+    <ion-item class="padding4">
+      <ion-label position="floating" color="primary">Title</ion-label>
+      <ion-input [(ngModel)]="title" name="title" type="text" spellcheck="false" autocapitalize="off">
+      </ion-input>
+    </ion-item>
+
+    <ion-item class="padding4">
+      <ion-label position="floating" color="primary">Description</ion-label>
+      <ion-textarea [(ngModel)]="desc" name="desc" type="text" spellcheck="false" autocapitalize="off">
+      </ion-textarea>
+    </ion-item>
+
+    <ion-checkbox name="isCompleted" [(ngModel)]="isCompleted" style="margin: 10px;">is this completed?</ion-checkbox>
+
+
+    <ion-button expand="block" style="margin: 10%;" (click)="addtodoList()">
+      <ion-icon  slot="start" name="add"></ion-icon>
+      add
+    </ion-button>
+    
+  </ion-list>
+
+
+
+
+</ion-content>

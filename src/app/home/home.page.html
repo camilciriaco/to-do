@@ -1,15 +1,28 @@
-<ion-header [translucent]="true">
+<ion-header class="ion-no-border">
   <ion-toolbar>
-    <ion-title>
-      Inbox
-    </ion-title>
+    <ion-title>To do List</ion-title>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button (click)="addcontacts()">
+        <ion-icon slot="icon-only" name="add-outline" color=primary></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="refresh($event)">
     <ion-refresher-content></ion-refresher-content>
-  </ion-refresher>
+  </ion-refresher> -->
+
+  <ion-searchbar
+  (ionChange)="searchItems($event.detail.value)"
+  debounce="500"
+  animated
+  placeholder="Search Title"
+  > <ion-icon id="open-modal" name="filter-outline" color="primary"></ion-icon></ion-searchbar>
   
   <ion-header collapse="condense">
     <ion-toolbar>
@@ -19,7 +32,42 @@
     </ion-toolbar>
   </ion-header>
   
-  <ion-list>
-    <app-message *ngFor="let message of getMessages()" [message]="message"></app-message>
+  <ion-list *ngFor="let items of todoList; let i = index">
+    <ion-item >
+      <div slot="start" [class]="items.isCompleted == 'Completed' ? 'dot dot-green' : 'dot dot-red'"></div>
+      <ion-label class="ion-text-wrap">
+        <h2>
+          {{ items.title }}
+          <span class="date">
+            <ion-note>{{ items.isCompleted }}</ion-note>
+            <ion-icon aria-hidden="true" name="chevron-forward" size="small"></ion-icon>
+          </span>
+        </h2>
+        <h3>{{ items.desc }}</h3>
+      </ion-label>
+      </ion-item>
+  
   </ion-list>
+
+
+  <ion-modal trigger="open-modal" [initialBreakpoint]="1" [breakpoints]="[0, 1]">
+    <ng-template>
+      <div style="margin: 10%;">
+        <div>
+          <h4 style="text-align: center;">Filter Status</h4>
+        
+          <ion-checkbox name="isCompleted" [disabled]="disablechkbox" [(ngModel)]="isCompleted" style="margin: 10px;">Completed</ion-checkbox> <br>
+          <ion-checkbox name="isPending" [disabled]="disablechkbox" [(ngModel)]="isPending" style="margin: 10px;">Pending</ion-checkbox> <br>
+          <ion-checkbox name="all" [(ngModel)]="all" style="margin: 10px;" (ionChange)="changeAll()">All</ion-checkbox>
+       
+        </div>
+
+        <div>
+          <ion-button expand="block" (click)="filterItems()">Filter</ion-button>
+        </div>
+       
+      </div>
+     
+    </ng-template>
+  </ion-modal>
 </ion-content>
