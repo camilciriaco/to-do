@@ -43,7 +43,6 @@ export class AddtodoPage implements OnInit {
     var newId = existingTodoList[existingTodoList.length - 1]
       ? existingTodoList[existingTodoList.length - 1].id
       : 0;
-    // var newId = parseInt(existingContactList[existingContactList.length - 1].id || 0) + 1;
     var list = {
       id: newId + 1,
       title: this.title,
@@ -70,7 +69,6 @@ export class AddtodoPage implements OnInit {
     if (storedData !== null) {
       existingTodoList = JSON.parse(storedData);
     }
- //   var existingTodoList = JSON.parse(localStorage.getItem("allAddedToDoList")) || [];
     console.log(existingTodoList);
     if (!localStorage.getItem("allAddedToDoList")) {
       localStorage.setItem("allAddedToDoList", "[]");
@@ -79,9 +77,7 @@ export class AddtodoPage implements OnInit {
 
   async presentAlertConfirm() {
     const alert = await this.alertCtrl.create({
-      //cssClass: 'my-custom-class',
-      // header: 'Saved!',
-      message: " Saved!",
+      message: "Saved!",
       buttons: [
         {
           text: "Ok",

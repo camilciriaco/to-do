@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { RefresherCustomEvent } from '@ionic/angular';
+import { InfiniteScrollCustomEvent, RefresherCustomEvent } from '@ionic/angular';
 import { MessageComponent } from '../message/message.component';
 import { OnInit, ViewChildren, ViewChild, ElementRef } from '@angular/core';
 import { Platform, IonContent, MenuController, LoadingController, AlertController, NavController, ToastController, IonInfiniteScroll, ModalController } from '@ionic/angular';
@@ -27,6 +27,7 @@ export class HomePage {
   todoList: any = [];
   todoListFilter: any = [];
   disablechkbox: any; 
+  startIndex = 0;
 
   constructor( private router: Router, 
     public element: ElementRef, 
@@ -39,11 +40,15 @@ export class HomePage {
     public alertCtrl: AlertController, 
     public toastCtrl: ToastController) {}
 
-  // refresh(ev: any) {
-  //   setTimeout(() => {
-  //     (ev as RefresherCustomEvent).detail.complete();
-  //   }, 3000);
-  // }
+  refresh(ev: any) {
+    setTimeout(() => {
+      const storedData = localStorage.getItem("allAddedToDoList");
+      if (storedData !== null) {
+        this.todoList = JSON.parse(storedData);
+        this.todoListFilter = JSON.parse(storedData);
+      }
+    }, 3000);
+  }
 
   // getMessages(): Message[] {
   //   return this.data.getMessages();
@@ -137,6 +142,65 @@ export class HomePage {
       this.disablechkbox = false;
     }
   }
+
+  async chooseOption(i: any, item: any){
+    console.log(item);
+    const alert = await this.alertCtrl.create({
+      cssClass: 'my-custom-class',
+      header: 'To-do',
+      message: 'Please choose options.',
+      buttons: [
+        {
+          text: 'Change Status',
+          cssClass: 'secondary',
+          handler: (blah) => {
+            this.editStatus(i, item);
+          }
+        }, {
+          text: 'Delete',
+          handler: () => {
+          
+            const storedData = localStorage.getItem("allAddedToDoList");
+            if (storedData !== null) {
+              this.todoList = JSON.parse(storedData);
+              this.todoListFilter = JSON.parse(storedData);
+            }
+            this.todoList.splice(i, 1);
+              localStorage.setItem('allAddedToDoList', JSON.stringify(this.todoList));
+              location.reload();
+            
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
+  editStatus(i: any, items: any) {
+
+    const storedData = localStorage.getItem("allAddedToDoList");
+    if (storedData !== null) {
+      var edited = JSON.parse(storedData);
+    }
+    var status = items['isCompleted']=="Completed" ? "Pending" : "Completed";
+
+    var changeStatus = {
+      id: items.id,
+      title: items.title,
+      desc: items.desc,
+      isCompleted: status,
+    };
+   
+    edited[i] = changeStatus;
+  var editedData = JSON.stringify(edited);
+  localStorage.setItem("allAddedToDoList", editedData);
+  location.reload();
+  }
+
+
+
+
 
 
 }
