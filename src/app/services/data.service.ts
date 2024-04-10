@@ -1,83 +1,67 @@
 import { Injectable } from '@angular/core';
 
-export interface Message {
-  fromName: string;
-  subject: string;
-  date: string;
+export interface TodoList {
   id: number;
-  read: boolean;
+  title: any;
+  desc: any;
+  isCompleted: any;
 }
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
-  public messages: Message[] = [
+  public todo: TodoList[] = [
     {
-      fromName: 'Matt Chorsey',
-      subject: 'New event: Trip to Vegas',
-      date: '9:32 AM',
       id: 0,
-      read: false
+      title: 'Lorem Ipsum',
+      desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      isCompleted: 'Pending',
     },
     {
-      fromName: 'Lauren Ruthford',
-      subject: 'Long time no chat',
-      date: '6:12 AM',
       id: 1,
-      read: false
+      title: 'dolor sit',
+      desc: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.',
+      isCompleted: 'Completed',
     },
     {
-      fromName: 'Jordan Firth',
-      subject: 'Report Results',
-      date: '4:55 AM',
       id: 2,
-      read: false
+      title: 'Lorem Ipsum 2',
+      desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      isCompleted: 'Pending',
     },
     {
-      fromName: 'Bill Thomas',
-      subject: 'The situation',
-      date: 'Yesterday',
       id: 3,
-      read: false
+      title: 'amet',
+      desc: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry.',
+      isCompleted: 'Completed',
     },
     {
-      fromName: 'Joanne Pollan',
-      subject: 'Updated invitation: Swim lessons',
-      date: 'Yesterday',
       id: 4,
-      read: false
+      title: 'lipsum 4',
+      desc: 'Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+      isCompleted: 'Pending',
     },
-    {
-      fromName: 'Andrea Cornerston',
-      subject: 'Last minute ask',
-      date: 'Yesterday',
-      id: 5,
-      read: false
-    },
-    {
-      fromName: 'Moe Chamont',
-      subject: 'Family Calendar - Version 1',
-      date: 'Last Week',
-      id: 6,
-      read: false
-    },
-    {
-      fromName: 'Kelly Richardson',
-      subject: 'Placeholder Headhots',
-      date: 'Last Week',
-      id: 7,
-      read: false
-    }
   ];
+  
 
   constructor() { }
 
-  public getMessages(): Message[] {
-    return this.messages;
+  public getTodo(): TodoList[] {
+    return this.todo;
   }
 
-  public getMessageById(id: number): Message {
-    return this.messages[id];
+  public getToDoById(id: number): TodoList {
+    return this.todo[id];
+  }
+
+
+  public saveTodoList(todoList: any[]): void {
+    localStorage.setItem('allAddedToDoList', JSON.stringify(todoList));
+  }
+
+  public getTodos(): string[] {
+    const todosString = localStorage.getItem('allAddedToDoList');
+    return todosString ? JSON.parse(todosString) : [];
   }
 }

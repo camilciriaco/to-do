@@ -1,14 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, ChangeDetectorRef } from '@angular/core';
 import { InfiniteScrollCustomEvent, RefresherCustomEvent } from '@ionic/angular';
 import { MessageComponent } from '../message/message.component';
-import { OnInit, ViewChildren, ViewChild, ElementRef } from '@angular/core';
-import { Platform, IonContent, MenuController, LoadingController, AlertController, NavController, ToastController, IonInfiniteScroll, ModalController } from '@ionic/angular';
+import { Platform, IonContent, LoadingController, AlertController, NavController, ToastController, IonInfiniteScroll, ModalController } from '@ionic/angular';
 import { Router, NavigationExtras } from '@angular/router';
 
 import { AddtodoPage } from '../addtodo/addtodo.page';
 
 
-import { DataService, Message } from '../services/data.service';
+import { DataService, TodoList } from '../services/data.service';
 
 @Component({
   selector: 'app-home',
@@ -30,15 +29,13 @@ export class HomePage {
   startIndex = 0;
 
   constructor( private router: Router, 
-    public element: ElementRef, 
     public modalCtrl: ModalController, 
     private platform: Platform, 
     private navCtrl: NavController, 
-   // public api: RestService, 
-    private menu: MenuController, 
     public loadingCtrl: LoadingController, 
     public alertCtrl: AlertController, 
-    public toastCtrl: ToastController) {}
+    public toastCtrl: ToastController,
+    private cdr: ChangeDetectorRef) {}
 
   refresh(ev: any) {
     setTimeout(() => {
@@ -89,39 +86,32 @@ export class HomePage {
 
     console.log(this.isCompleted);
     console.log(this.isPending);
-  //  // let status_filter = this.isCompleted ? this.isCompleted= "Completed" : "Pending";
-  this.todoList = this.todoListFilter.filter((item: any) => {
-    // Check if item and isCompleted property are defined
+    this.todoList = this.todoListFilter.filter((item: any) => {
     if (item && item.isCompleted !== undefined) {
       const itemStatus = item.isCompleted.toString().toLowerCase();
 
-      // Check if the item is either pending or completed based on this.isPending and this.isCompleted
-      if ((this.isPending && itemStatus.includes('pending')) || (this.isCompleted && itemStatus.includes('completed'))) {
-        return true; // Include item in the filtered list if it matches the conditions
+       if ((this.isPending && itemStatus.includes('pending')) || (this.isCompleted && itemStatus.includes('completed'))) {
+        return true; 
       } else if(this.all){
         return true;
       }
       else {
-        return false; // Exclude item if it doesn't match the conditions
+        return false;
       }
     } else {
-      return false; // Exclude items with undefined isCompleted property
+      return false; 
     }
   });
     console.log(this.todoList);
   }
 
-  async addcontacts(){
+  async addTodo(){
     const modal = await this.modalCtrl.create({
       component: AddtodoPage,
       cssClass: 'modal_addlist',
-      // componentProps: {
-      //   track: track
-      // }
     });
 
     modal.onDidDismiss().then(() => {
-      // Call the method to do whatever in your home.ts
          console.log('Modal closed');
          const storedData = localStorage.getItem("allAddedToDoList");
         if (storedData !== null) {
@@ -159,7 +149,6 @@ export class HomePage {
         }, {
           text: 'Delete',
           handler: () => {
-          
             const storedData = localStorage.getItem("allAddedToDoList");
             if (storedData !== null) {
               this.todoList = JSON.parse(storedData);
@@ -167,9 +156,15 @@ export class HomePage {
             }
             this.todoList.splice(i, 1);
               localStorage.setItem('allAddedToDoList', JSON.stringify(this.todoList));
-              location.reload();
-            
-          }
+              this.cdr.detectChanges();
+              setTimeout(() => {
+                const storedData = localStorage.getItem("allAddedToDoList");
+                if (storedData !== null) {
+                  this.todoList = JSON.parse(storedData);
+                  this.todoListFilter = JSON.parse(storedData);
+                }
+                }, 1000);
+           }
         }
       ]
     });
@@ -177,8 +172,7 @@ export class HomePage {
     await alert.present();
   }
 
-  editStatus(i: any, items: any) {
-
+async editStatus(i: any, items: any) {
     const storedData = localStorage.getItem("allAddedToDoList");
     if (storedData !== null) {
       var edited = JSON.parse(storedData);
@@ -193,9 +187,18 @@ export class HomePage {
     };
    
     edited[i] = changeStatus;
-  var editedData = JSON.stringify(edited);
-  localStorage.setItem("allAddedToDoList", editedData);
-  location.reload();
+    var editedData = JSON.stringify(edited);
+    localStorage.setItem("allAddedToDoList", editedData);
+    this.cdr.detectChanges();
+    setTimeout(() => {
+      const storedData = localStorage.getItem("allAddedToDoList");
+      if (storedData !== null) {
+        this.todoList = JSON.parse(storedData);
+        this.todoListFilter = JSON.parse(storedData);
+      }
+    }, 1000);
+  //location.reload();
+  
   }
 
 

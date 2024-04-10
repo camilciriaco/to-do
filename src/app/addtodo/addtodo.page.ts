@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { Component, OnInit } from "@angular/core";
 import {
   Platform,
   NavParams,
@@ -21,7 +21,6 @@ export class AddtodoPage implements OnInit {
 
   constructor(private platform: Platform,
     public toastCtrl: ToastController,
-    private navParams: NavParams,
     private modalCtrl: ModalController,
     public alertCtrl: AlertController,
     public loadingCtrl: LoadingController,) { }
@@ -31,9 +30,7 @@ export class AddtodoPage implements OnInit {
   }
 
   addtodoList(){
-
     var status = this.isCompleted ? this.isCompleted = "Completed" : this.isCompleted = "Pending" ;
-
     let existingTodoList: any[] = [];
     const storedData = localStorage.getItem("allAddedToDoList");
     if (storedData !== null) {
