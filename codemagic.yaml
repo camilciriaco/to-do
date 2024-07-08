@@ -58,63 +58,63 @@
 
 #ios
 
-workflows:
-  ios-workflow:
-    name: iOS Workflow
-    # max_build_duration: 120
-    # integrations:
-    #   app_store_connect: codemagic
-    environment:
-      # ios_signing:
-      #   distribution_type: app_store
-      #   bundle_identifier: io.ionic.starter
-      vars:
-        EXAMPLE_VAR: '1'
-        # APP_STORE_APPLE_ID: 1555555551
-        # XCODE_WORKSPACE: "platforms/ios/YOUR_APP.xcworkspace"
-        # XCODE_SCHEME: "YOUR_SCHEME"
-    scripts:
-      - name: Install npm dependencies for Ionic Capacitor project
-        script: | 
-          npm install
-      - name: Cocoapods installation
-        script: | 
-          cd ios/App && pod install
-      # - name: Update dependencies and copy web assets to native project
-        # script: | 
-          # if you don't need to update native dependencies, use this:
-          # npx cap copy
-          #
-          # to update native dependencies, use this command:
-          # npx cap sync
-      - name: Set up code signing settings on Xcode project
-        script: | 
-         ionic cap build ios
+# workflows:
+#   ios-workflow:
+#     name: iOS Workflow
+#     # max_build_duration: 120
+#     # integrations:
+#     #   app_store_connect: codemagic
+#     environment:
+#       # ios_signing:
+#       #   distribution_type: app_store
+#       #   bundle_identifier: io.ionic.starter
+#       vars:
+#         EXAMPLE_VAR: '1'
+#         # APP_STORE_APPLE_ID: 1555555551
+#         # XCODE_WORKSPACE: "platforms/ios/YOUR_APP.xcworkspace"
+#         # XCODE_SCHEME: "YOUR_SCHEME"
+#     scripts:
+#       - name: Install npm dependencies for Ionic Capacitor project
+#         script: | 
+#           npm install
+#       - name: Cocoapods installation
+#         script: | 
+#           cd ios/App && pod install
+#       # - name: Update dependencies and copy web assets to native project
+#         # script: | 
+#           # if you don't need to update native dependencies, use this:
+#           # npx cap copy
+#           #
+#           # to update native dependencies, use this command:
+#           # npx cap sync
+#       - name: Set up code signing settings on Xcode project
+#         script: | 
+#          ionic cap build ios
         
-          xcode-project use-profiles
-           - cd $HOME/build/outputs/ipa
-           - zip -r ipa.zip MyApp.app
-           - curl \ 
-            -X POST \
-            -F "ipa=@ipa.zip" \
-            -F "provider=ci" \
-            https://api.appstoreconnect.apple.com/v1/builds
-      # - name: Increment build number
-      #   script: | 
-      #     cd $CM_BUILD_DIR/ios/App
-      #     LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
-      #     agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
-      # - name: Build ipa for distribution
-      #   script: | 
-      #     cd $CM_BUILD_DIR/ios/App
-      #     xcode-project build-ipa \
-      #       --workspace "$XCODE_WORKSPACE" \
-      #       --scheme "$XCODE_SCHEME"
-    artifacts:
-      - build/ios/ipa/*.ipa
-      - /tmp/xcodebuild_logs/*.log
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
-      - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
+#           xcode-project use-profiles
+#            - cd $HOME/build/outputs/ipa
+#            - zip -r ipa.zip MyApp.app
+#            - curl \ 
+#             -X POST \
+#             -F "ipa=@ipa.zip" \
+#             -F "provider=ci" \
+#             https://api.appstoreconnect.apple.com/v1/builds
+#       # - name: Increment build number
+#       #   script: | 
+#       #     cd $CM_BUILD_DIR/ios/App
+#       #     LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
+#       #     agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
+#       # - name: Build ipa for distribution
+#       #   script: | 
+#       #     cd $CM_BUILD_DIR/ios/App
+#       #     xcode-project build-ipa \
+#       #       --workspace "$XCODE_WORKSPACE" \
+#       #       --scheme "$XCODE_SCHEME"
+#     artifacts:
+#       - build/ios/ipa/*.ipa
+#       - /tmp/xcodebuild_logs/*.log
+#       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.app
+#       - $HOME/Library/Developer/Xcode/DerivedData/**/Build/**/*.dSYM
     # publishing:
     #   email:
     #     recipients:
@@ -136,3 +136,18 @@ workflows:
     #     # Configuration related to App Store (optional)
     #     # Note: This action is performed during post-processing.
     #   #  submit_to_app_store: false
+
+
+    workflows:
+    ios: 
+    name: iOS Build and Deploy
+    environment:
+      vars:
+        EXAMPLE_VAR: '1'
+    scripts:
+     - ionic cap build ios
+     - npx cap sync ios
+     - npx cap copy ios
+     - npx cap open ios
+     artificats:
+      - build/ios/ipa/*.ipa
