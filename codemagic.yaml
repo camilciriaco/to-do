@@ -140,9 +140,12 @@
   workflows:
     ios: 
       name: iOS Build and Deploy
-        environment: 
-          vars:
-            EXAMPLE_VAR: '1'
+     environment:
+#       # ios_signing:
+#       #   distribution_type: app_store
+#       #   bundle_identifier: io.ionic.starter
+      vars:
+        EXAMPLE_VAR: '1'
       scripts: 
       - ionic cap build ios
       - npx cap sync ios
