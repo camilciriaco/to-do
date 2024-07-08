@@ -80,13 +80,13 @@ workflows:
       - name: Cocoapods installation
         script: | 
           cd ios/App && pod install
-      - name: Update dependencies and copy web assets to native project
-        script: | 
+      # - name: Update dependencies and copy web assets to native project
+        # script: | 
           # if you don't need to update native dependencies, use this:
           # npx cap copy
           #
           # to update native dependencies, use this command:
-          npx cap sync
+          # npx cap sync
       - name: Set up code signing settings on Xcode project
         script: | 
           xcode-project use-profiles
