@@ -87,9 +87,9 @@ workflows:
           #
           # to update native dependencies, use this command:
           # npx cap sync
-      - name: Set up code signing 
+      - name: Set up code signing settings on Xcode project
         script: | 
-        - ionic cap build ios 
+         ionic cap build ios
         
           xcode-project use-profiles
            - cd $HOME/build/outputs/ipa
