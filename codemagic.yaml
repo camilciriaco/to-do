@@ -145,9 +145,9 @@
       vars:
         EXAMPLE_VAR: '1'
     scripts:
-     - ionic cap build ios
-     - npx cap sync ios
-     - npx cap copy ios
-     - npx cap open ios
-     artificats:
+     ionic cap build ios
+     npx cap sync ios
+     npx cap copy ios
+     npx cap open ios
+     artifacts:
       - build/ios/ipa/*.ipa
