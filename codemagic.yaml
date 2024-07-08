@@ -137,19 +137,18 @@
     #     # Note: This action is performed during post-processing.
     #   #  submit_to_app_store: false
 
-
-    workflows:
+  workflows:
     ios: 
     name: iOS Build and Deploy
-    environment: | 
+    environment: 
       vars:
         EXAMPLE_VAR: '1'
-    scripts: | 
+    scripts: 
      ionic cap build ios
      npx cap sync ios
      npx cap copy ios
      npx cap open ios
     artifacts:
-        build/ios/ipa/*.ipa
+      -  build/ios/ipa/*.ipa
 
         
