@@ -3,7 +3,7 @@ workflows:
     name: Ionic Capacitor Android Workflow
     max_build_duration: 120
     environment:
-      android_signing:
+      # android_signing:
       #   - keystore_reference
       # groups:
       #   - google_play
