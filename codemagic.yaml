@@ -141,13 +141,15 @@
     workflows:
     ios: 
     name: iOS Build and Deploy
-    environment:
+    environment: | 
       vars:
         EXAMPLE_VAR: '1'
-    scripts:
+    scripts: | 
      ionic cap build ios
      npx cap sync ios
      npx cap copy ios
-    npx cap open ios
+     npx cap open ios
     artifacts:
         build/ios/ipa/*.ipa
+
+        
