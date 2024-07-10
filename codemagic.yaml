@@ -26,8 +26,7 @@ workflows:
       # Build the Ionic project
       - name: Build Ionic Project
         script: |
-          ionic cap build --prod
-
+          ionic cap build ios 
       # Prepare the iOS platform and build
       - name: Prepare iOS Platform and Build
         script: |
