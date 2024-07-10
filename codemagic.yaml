@@ -1,47 +1,49 @@
+version: 2.0
+
+# Define the environment for the build
+environment:
+  vars:
+    NODE_VERSION: '16.x'  # Specify the Node.js version
+    NPM_VERSION: 'latest'  # Optionally specify the NPM version
+
+# Define the workflows
 workflows:
-  ios-workflow:
-    name: iOS Workflow
-  #  max_build_duration: 120
-    integrations:
-      app_store_connect: codemagic
-    environment:
-  #    ios_signing:
-  #      distribution_type: app_store
-   #     bundle_identifier: io.codemagic.ionicsample
-      vars:
-        EXAMPLE_VAR: '1'
-       # APP_STORE_APPLE_ID: 1555555551
-      #  XCODE_WORKSPACE: "platforms/ios/YOUR_APP.xcworkspace"
-       # XCODE_SCHEME: "YOUR_SCHEME"
+  ios:
+    name: Build and Deploy iOS App
+    max_build_duration: 60  # Max build duration in minutes
+
+    # Define the configuration for the build
+   
+
+    # Define the build steps
     scripts:
-      - name: Install npm dependencies for Ionic Capacitor project
-        script: | 
+      # Install dependencies
+      - name: Install Dependencies
+        script: |
+          npm install -g ionic cordova
           npm install
-      - name: Cocoapods installation
-        script: | 
-          cd ios/App && pod install
-      - name: Update dependencies and copy web assets to native project
-        script: | 
-          # if you don't need to update native dependencies, use this:
-          # npx cap copy
-          #
-          # to update native dependencies, use this command:
-          npx cap sync
-          ionic cap build ios
-      - name: Set up code signing settings on Xcode project
-        script: | 
-          xcode-project use-profiles
-      - name: Increment build number
-        script: | 
-          cd $CM_BUILD_DIR/ios/App
-          LATEST_BUILD_NUMBER=$(app-store-connect get-latest-app-store-build-number "$APP_STORE_APPLE_ID")
-          agvtool new-version -all $(($LATEST_BUILD_NUMBER + 1))
-      - name: Build ipa for distribution
-        script: | 
-          cd $CM_BUILD_DIR/ios/App
-          xcode-project build-ipa \
-            --workspace "$XCODE_WORKSPACE" \
-            --scheme "$XCODE_SCHEME"
+
+      # Build the Ionic project
+      - name: Build Ionic Project
+        script: |
+          ionic build --prod
+
+      # Prepare the iOS platform and build
+      - name: Prepare iOS Platform and Build
+        script: |
+          npx cap sync ios
+          npx cap build ios
+
+      # Archive the app and export IPA
+      - name: Archive and Export IPA
+        script: |
+          cd ios/App
+          xcodebuild -workspace App.xcworkspace -scheme App -archivePath build/App.xcarchive archive
+          xcodebuild -exportArchive -archivePath build/App.xcarchive -exportPath build/ -exportOptionsPlist ../ExportOptions.plist
+
+    # Define the artifacts to be saved
+    # artifacts:
+    #   - ios/App/build/App.ipa
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
@@ -55,16 +57,14 @@ workflows:
         notify:
           success: true
           failure: false
-      app_store_connect:
-        auth: integration
+      # app_store_connect:
+      #   auth: integration
 
         # Configuration related to TestFlight (optional)
         # Note: This action is performed during post-processing.
-        submit_to_testflight: true
-        beta_groups: # Specify the names of beta tester groups that will get access to the build once it has passed beta review.
-          - group name 1
-          - group name 2
+       # submit_to_testflight: true
+       
 
         # Configuration related to App Store (optional)
         # Note: This action is performed during post-processing.
-        submit_to_app_store: false
+      
